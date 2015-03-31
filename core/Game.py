@@ -44,6 +44,27 @@ class Game:
     def col(self,i):
         return [row[i] for row in self.board]
 
+    def fdiag(self,i):
+        diag = []
+        for n in range(0,self.rows):
+            if n>=0 and n<self.rows and i-n>=0 and i-n<self.cols:
+                diag.append(self.board[n][i-n])
+        return diag
+
+    def bdiag(self,i):
+        diag = []
+        for n in range(0,self.rows):
+            if n>=0 and n<self.rows and i-n>=0 and i-n<self.cols:
+                diag.append(self.board[-1-n][i-n])
+        return diag
+
+    def diag(self,i,dir):
+        if dir=="f":
+            return self.fdiag(i)
+        if dir=="b":
+            return self.bdiag(i)
+        return []
+
     def __str__(self):
         output = "\n".join((" ".join(str(i) for i in row) for row in self.board))
         return output
@@ -120,43 +141,18 @@ class Game:
             result = four_in_a_row(col)
             if result is not None:
                 return result
-        #/ diagonals
-        for i in range(3,self.cols):
-            diag = []
-            n = 0
-            while n<self.rows and i-n>=0:
-                diag.append(self.board[n][i-n])
-                n+=1
+
+        for i in range(3,self.cols+self.rows-3):
+            #/ diagonals
+            diag = self.fdiag(i)
             result = four_in_a_row(diag)
             if result is not None:
                 return result
-        for i in range(1,self.rows-3):
-            diag = []
-            n = 0
-            while i+n<self.rows and n<self.cols:
-                diag.append(self.board[i+n][-1-n])
-                n+=1
+
+            #\ diagonals
+            diag = self.bdiag(i)
             result = four_in_a_row(diag)
             if result is not None:
                 return result
-        #\ diagonals
-        for i in range(3,self.cols):
-            diag = []
-            n = 0
-            while n<self.rows and i-n>=0:
-                diag.append(self.board[-1-n][i-n])
-                n+=1
-            result = four_in_a_row(diag)
-            if result is not None:
-                return result
-        for i in range(1,self.rows-3):
-            diag = []
-            n = 0
-            while i+n<self.rows and n<self.cols:
-                diag.append(self.board[-1-i-n][-1-n])
-                n+=1
-            result = four_in_a_row(diag)
-            if result is not None:
-                return result
-                
+            
         return None
