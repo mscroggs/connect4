@@ -36,6 +36,22 @@ class Game:
     def col(self,i):
         return [row[i] for row in self.board]
 
+    def __str__(self):
+        pieces = [".","o","x"]
+        output = []
+        for r,row in enumerate(self.board):
+            line = ""
+            for piece in row:
+                line += pieces[piece]
+            if r==0: line += " Player 1 is "+pieces[1]+"."
+            if r==1: line += " Player 2 is "+pieces[2]+"."
+            output.append(line)
+        line = ""
+        for i in range(len(row)):
+            line += str(i)
+        output.append(line)
+        return "\n".join(output)
+
     def fdiag(self,i):
         diag = []
         for n in range(0,self.rows):
@@ -56,10 +72,6 @@ class Game:
         if dir=="b":
             return self.bdiag(i)
         return []
-
-    def __str__(self):
-        output = "\n".join((" ".join(str(i) for i in row) for row in self.board))
-        return output
 
     def put_in(self,player,column):
         col = self.col(column)
