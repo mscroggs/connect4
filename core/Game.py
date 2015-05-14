@@ -19,14 +19,8 @@ class Game:
         self.cols = cols
         self.s1 = s1
         self.s2 = s2
-        self.s1_moves = []
-        self.s2_moves = []
-        self.s1.my_moves = self.s1_moves
-        self.s1.your_moves = self.s2_moves
         self.s1.turn = 1
         self.s1.game = self
-        self.s2.my_moves = self.s2_moves
-        self.s2.your_moves = self.s1_moves
         self.s2.turn = 2
         self.s2.game = self
         self.turn = 1
@@ -34,8 +28,6 @@ class Game:
 
     def reset(self):
         self.board = [[0]*self.cols for i in range(self.rows)]
-        self.s1_moves = []
-        self.s2_moves = []
         self.turn = 1
 
     def row(self,i):
