@@ -1,6 +1,9 @@
 from core import Strategy
 
 class HumanPlay(Strategy):
+    def __init__(self):
+        self.author = "Matthew Scroggs"
+
     def play(self):
         print("\n\nThe board looks like this:")
         print(self.game)

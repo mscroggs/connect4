@@ -27,6 +27,7 @@ class Game:
         self.reset()
 
     def reset(self):
+        self.r_winner = 0
         self.board = [[0]*self.cols for i in range(self.rows)]
         self.turn = 1
 
@@ -86,21 +87,25 @@ class Game:
         
         self.board[row][column] = player
 
-    def repeated_play(self,games):
+    def repeated_play(self,games,printing=1):
         wins = [0,0,0]
         for i in range(games):
             self.reset()
-            wins[self.play(1)] += 1
-        print("------------")
+            wins[self.play(printing)] += 1
+        if printing>0: print("------------")
         if wins[1] > wins[2]:
-            print("Player 1 ("+self.s1.__class__.__name__+") wins")
+            self.r_winner = 1
+            if printing>0: print("Player 1 ("+self.s1.__class__.__name__+") wins")
         elif wins[1] < wins[2]:
-            print("Player 2 ("+self.s2.__class__.__name__+") wins")
+            self.r_winner = 2
+            if printing>0: print("Player 2 ("+self.s2.__class__.__name__+") wins")
         else:
-            print("It's a draw!")
-        print("  Player 1 won {0} games ({1}%).".format(str(wins[1]),100*wins[1]/games))
-        print("  Player 2 won {0} games ({1}%).".format(str(wins[2]),100*wins[2]/games))
-        print("  There were {0} draws ({1}%).".format(str(wins[0]),100*wins[0]/games))
+            self.r_winner = 0
+            if printing>0: print("It's a draw!")
+        if printing>0:
+            print("  Player 1 won {0} games ({1}%).".format(str(wins[1]),100*wins[1]/games))
+            print("  Player 2 won {0} games ({1}%).".format(str(wins[2]),100*wins[2]/games))
+            print("  There were {0} draws ({1}%).".format(str(wins[0]),100*wins[0]/games))
 
     def play(self,printing=2):
         while True:
@@ -122,10 +127,10 @@ class Game:
             if printing>0: print("Game is a draw")
             return 0
         elif winner == 1:
-            if printing>0: print("Player 1 ("+self.s1.__class__.__name__+") wins")
+            if printing>0: print("Player 1 ("+self.s1.__class__.__name__+", by "+self.s2.author+") wins")
             return 1
         elif winner == 2:
-            if printing>0: print("Player 2 ("+self.s2.__class__.__name__+") wins")
+            if printing>0: print("Player 2 ("+self.s2.__class__.__name__+", by "+self.s2.author+") wins")
             return 2
         else:
             raise ResultError

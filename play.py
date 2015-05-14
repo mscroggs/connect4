@@ -10,6 +10,7 @@ random = RandomStrategy()
 lowest = LowestColumnStrategy()
 human = HumanPlay()
 
-game = Game(lowest,random)
+game = Game(human,lowest)
 
-game.repeated_play(10)
+game.play()
+#game.repeated_play(10)

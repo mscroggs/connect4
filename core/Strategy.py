@@ -1,2 +1,3 @@
 class Strategy:
-    pass
+    def __init__(self):
+        self.author = "Anonymous"
