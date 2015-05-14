@@ -44,15 +44,18 @@ for i1,s1 in enumerate(strategies):
     max_a_len = max(max_a_len,len(s1.author)+2)
     for i2,s2 in enumerate(strategies):
         if i1!=i2:
-            game = Game(s1,s2)
-            game.repeated_play(10,0)
-            if game.r_winner==0:
-                points[i1]+=1
-                points[i2]+=1
-            if game.r_winner==1:
-                points[i1]+=3
-            if game.r_winner==2:
-                points[i2]+=3
+            try:
+                game = Game(s1,s2)
+                game.repeated_play(10,0)
+                if game.r_winner==0:
+                    points[i1]+=1
+                    points[i2]+=1
+                if game.r_winner==1:
+                    points[i1]+=3
+                if game.r_winner==2:
+                    points[i2]+=3
+            except:
+                pass
 
 for i,p in enumerate(points):
     nom = strategies[i].__class__.__name__
