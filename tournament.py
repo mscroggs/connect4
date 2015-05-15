@@ -8,6 +8,9 @@ from strategies.human_play import HumanPlay
 def is_strategy_file(f):
     if not os.path.isfile(os.path.join(pages_dir, f)):
         return False
+    # Comment the next two lines out to test with failing strategy
+    if "failer" in f:
+        return False
     if "pyc" in f:
         return False
     if "__" in f:
