@@ -35,8 +35,8 @@ for file in strategy_files:
 
 points = [0]*len(strategies)
 
-max_len = 2
-max_a_len = 2
+max_len = 6
+max_a_len = 12
 
 
 for i1,s1 in enumerate(strategies):
@@ -57,7 +57,10 @@ for i1,s1 in enumerate(strategies):
             except:
                 pass
 
+print("Name" + " "*(max_len-4) + "Programmer" + " "*(max_a_len-10) + "Points")
+
+
 for i,p in enumerate(points):
     nom = strategies[i].__class__.__name__
     aut = strategies[i].author
-    print nom + " "*(max_len-len(nom)) + aut + " "*(max_a_len-len(aut)) + str(p)
+    print(nom + " "*(max_len-len(nom)) + aut + " "*(max_a_len-len(aut)) + str(p))

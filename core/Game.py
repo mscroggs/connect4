@@ -1,4 +1,8 @@
-from core.errors import MoveError,ResultError
+from core.errors import MoveError,ResultError,Alarm
+import signal
+
+def alarm_handler(signum,frame):
+    raise Alarm
 
 def four_in_a_row(row):
     run = 0
@@ -109,19 +113,30 @@ class Game:
 
     def play(self,printing=2):
         while True:
-            if self.turn == 1:
-                p1 = self.s1.play()
-                self.put_in(1,p1)
-                self.turn = 2
-            else:
-                p2 = self.s2.play()
-                self.put_in(2,p2)
-                self.turn = 1
-            if printing>1:
-                print(" ")
-                print(self)
-            winner = self.winner()
-            if winner is not None:
+            signal.signal(signal.SIGALRM,alarm_handler)
+            signal.alarm(5)
+            try:
+                if self.turn == 1:
+                    p1 = self.s1.play()
+                    self.put_in(1,p1)
+                    self.turn = 2
+                else:
+                    p2 = self.s2.play()
+                    self.put_in(2,p2)
+                    self.turn = 1
+                if printing>1:
+                    print(" ")
+                    print(self)
+                winner = self.winner()
+                if winner is not None:
+                    break
+                signal.alarm(0)
+            except Alarm:
+                winner = -1
+                if self.turn == 1:
+                    print(self.s1.__class__.__name__+" took too long to move. Game cancelled.")
+                if self.turn == 2:
+                    print(self.s2.__class__.__name__+" took too long to move. Game cancelled.")
                 break
         if winner == 0:
             if printing>0: print("Game is a draw")
