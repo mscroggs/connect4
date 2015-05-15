@@ -96,6 +96,8 @@ class Game:
         for i in range(games):
             self.reset()
             wins[self.play(printing)] += 1
+            if max(wins[1],wins[2]) > (games-wins[0])/2:
+                break
         if printing>0: print("------------")
         if wins[1] > wins[2]:
             self.r_winner = 1
@@ -115,29 +117,31 @@ class Game:
         while True:
             signal.signal(signal.SIGALRM,alarm_handler)
             signal.alarm(5)
-            try:
-                if self.turn == 1:
-                    p1 = self.s1.play()
-                    self.put_in(1,p1)
-                    self.turn = 2
-                else:
-                    p2 = self.s2.play()
-                    self.put_in(2,p2)
-                    self.turn = 1
-                if printing>1:
-                    print(" ")
-                    print(self)
-                winner = self.winner()
-                if winner is not None:
-                    break
-                signal.alarm(0)
-            except Alarm:
-                winner = -1
-                if self.turn == 1:
-                    print(self.s1.__class__.__name__+" took too long to move. Game cancelled.")
-                if self.turn == 2:
-                    print(self.s2.__class__.__name__+" took too long to move. Game cancelled.")
+            if self.turn == 1:
+                while True:
+                    try:
+                        p1 = self.s1.play()
+                        self.put_in(1,p1)
+                        self.turn = 2
+                        break
+                    except MoveError:
+                        pass
+            else:
+                while True:
+                    try:
+                        p2 = self.s2.play()
+                        self.put_in(2,p2)
+                        self.turn = 1
+                        break
+                    except MoveError:
+                        pass
+            if printing>1:
+                print(" ")
+                print(self)
+            winner = self.winner()
+            if winner is not None:
                 break
+            signal.alarm(0)
         if winner == 0:
             if printing>0: print("Game is a draw")
             return 0
