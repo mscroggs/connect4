@@ -33,10 +33,10 @@ class Board:
         return "\n".join(output)
 
     def rows(self):
-        return self.board
+        return [[self.board[row][col] for col in range(self.col_num)] for row in range(self.row_num)]
 
     def row(self,row_n):
-        return [[self.board[row][col] for col in range(self.col_num)] for row in range(self.row_num)]
+        return self.rows()[row_n]
 
     def cols(self):
         return [[self.board[row][col] for row in range(self.row_num)] for col in range(self.col_num)]
