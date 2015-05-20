@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-from core import Game,Strategy
+from core import Game,Strategy,Board
 from core.errors import ResultError,Alarm
 from time import sleep
 from strategies.human_play import HumanPlay

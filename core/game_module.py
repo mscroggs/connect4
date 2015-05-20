@@ -1,4 +1,5 @@
 from core.errors import MoveError,ResultError,Alarm
+from core.board_module import Board
 import signal
 
 def alarm_handler(signum,frame):
@@ -19,67 +20,25 @@ def four_in_a_row(row):
 
 class Game:
     def __init__(self,s1,s2,rows=6,cols=7):
-        self.rows = rows
-        self.cols = cols
+        self.row_num = rows
+        self.col_num = cols
         self.s1 = s1
         self.s2 = s2
         self.s1.turn = 1
-        self.s1.game = self
         self.s2.turn = 2
-        self.s2.game = self
         self.turn = 1
         self.reset()
 
     def reset(self):
         self.r_winner = 0
-        self.board = [[0]*self.cols for i in range(self.rows)]
+        self.board = Board(self.row_num,self.col_num)
         self.turn = 1
 
-    def row(self,i):
-        return self.board[i]
-
-    def col(self,i):
-        return [row[i] for row in self.board]
-
     def __str__(self):
-        pieces = [".","o","x"]
-        output = []
-        for r,row in enumerate(self.board):
-            line = ""
-            for piece in row:
-                line += pieces[piece]
-            if r==0: line += " Player 1 is "+pieces[1]+"."
-            if r==1: line += " Player 2 is "+pieces[2]+"."
-            output.append(line)
-        line = ""
-        for i in range(len(row)):
-            line += str(i)
-        output.append(line)
-        return "\n".join(output)
-
-    def fdiag(self,i):
-        diag = []
-        for n in range(0,self.rows):
-            if n>=0 and n<self.rows and i-n>=0 and i-n<self.cols:
-                diag.append(self.board[n][i-n])
-        return diag
-
-    def bdiag(self,i):
-        diag = []
-        for n in range(0,self.rows):
-            if n>=0 and n<self.rows and i-n>=0 and i-n<self.cols:
-                diag.append(self.board[-1-n][i-n])
-        return diag
-
-    def diag(self,i,dir):
-        if dir=="f":
-            return self.fdiag(i)
-        if dir=="b":
-            return self.bdiag(i)
-        return []
+        return self.board.__str__()
 
     def put_in(self,player,column):
-        col = self.col(column)
+        col = self.board.col(column)
         row = None
         for i,val in enumerate(col):
             if val == 0:
@@ -117,10 +76,12 @@ class Game:
         while True:
             signal.signal(signal.SIGALRM,alarm_handler)
             signal.alarm(5)
+            fake_board = Board(self.row_num,self.col_num)
+            fake_board.board = self.board.rows()
             if self.turn == 1:
                 while True:
                     try:
-                        p1 = self.s1.play(self.board)
+                        p1 = self.s1.play(fake_board)
                         self.put_in(1,p1)
                         self.turn = 2
                         break
@@ -129,7 +90,7 @@ class Game:
             else:
                 while True:
                     try:
-                        p2 = self.s2.play(self.board)
+                        p2 = self.s2.play(fake_board)
                         self.put_in(2,p2)
                         self.turn = 1
                         break
@@ -146,7 +107,7 @@ class Game:
             if printing>0: print("Game is a draw")
             return 0
         elif winner == 1:
-            if printing>0: print("Player 1 ("+self.s1.__class__.__name__+", by "+self.s2.author+") wins")
+            if printing>0: print("Player 1 ("+self.s1.__class__.__name__+", by "+self.s1.author+") wins")
             return 1
         elif winner == 2:
             if printing>0: print("Player 2 ("+self.s2.__class__.__name__+", by "+self.s2.author+") wins")
@@ -159,26 +120,24 @@ class Game:
         if 0 not in self.board[0]:
             return 0
         #horizontal
-        for row in self.board:
+        for row in self.board.rows():
             result = four_in_a_row(row)
             if result is not None:
                 return result
         #vertical
-        for i in range(self.cols):
-            col = self.col(i)
+        for col in self.board.cols():
             result = four_in_a_row(col)
             if result is not None:
                 return result
 
-        for i in range(3,self.cols+self.rows-3):
-            #/ diagonals
-            diag = self.fdiag(i)
+        #/ diagonals
+        for diag in self.board.forward_diags():
             result = four_in_a_row(diag)
             if result is not None:
                 return result
 
-            #\ diagonals
-            diag = self.bdiag(i)
+        #\ diagonals
+        for diag in self.board.backward_diags():
             result = four_in_a_row(diag)
             if result is not None:
                 return result

@@ -8,5 +8,5 @@ class PlayInOrder(Strategy):
     def play(self,board):
         next = self.next
         self.next += 1
-        self.next %= self.game.cols
+        self.next %= board.col_num
         return next

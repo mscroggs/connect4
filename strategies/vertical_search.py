@@ -7,8 +7,8 @@ class VerticalSearcher(Strategy):
 
     def play(self,board):
         pl = None
-        for col_number in range(self.game.cols):
-            col = self.game.col(col_number)
+        for col_number in range(board.col_num):
+            col = board.col(col_number)
             streak = 0
             player = 0
             for i in col:
@@ -23,8 +23,8 @@ class VerticalSearcher(Strategy):
                 break
             
         if pl is None:
-            pl = randrange(self.game.cols)
-            while self.game.board[0][pl]!=0:
-                pl = randrange(self.game.cols)
+            pl = randrange(board.col_num)
+            while board[0,pl]!=0:
+                pl = randrange(board.col_num)
 
         return pl
