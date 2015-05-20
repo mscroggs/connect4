@@ -4,7 +4,7 @@ class HumanPlay(Strategy):
     def __init__(self):
         self.author = "Matthew Scroggs"
 
-    def play(self):
+    def play(self,board):
         print("\n\nThe board looks like this:")
         print(self.game)
         print("\nYou are playing as "+[".","o","x"][self.turn]+".")

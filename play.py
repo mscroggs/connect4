@@ -12,7 +12,7 @@ lowest = LowestColumnStrategy()
 human = HumanPlay()
 vertical = VerticalSearcher()
 
-game = Game(human,vertical)
+game = Game(lowest,vertical)
 
-game.play()
+game.play(2)
 #game.repeated_play(10)

@@ -120,7 +120,7 @@ class Game:
             if self.turn == 1:
                 while True:
                     try:
-                        p1 = self.s1.play()
+                        p1 = self.s1.play(self.board)
                         self.put_in(1,p1)
                         self.turn = 2
                         break
@@ -129,7 +129,7 @@ class Game:
             else:
                 while True:
                     try:
-                        p2 = self.s2.play()
+                        p2 = self.s2.play(self.board)
                         self.put_in(2,p2)
                         self.turn = 1
                         break

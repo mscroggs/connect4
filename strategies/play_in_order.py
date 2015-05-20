@@ -5,7 +5,7 @@ class PlayInOrder(Strategy):
         self.author = "Matthew Scroggs"
         self.next = 0
 
-    def play(self):
+    def play(self,board):
         next = self.next
         self.next += 1
         self.next %= self.game.cols
