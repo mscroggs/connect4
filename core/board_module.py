@@ -1,3 +1,7 @@
+RED = "\033[31m"
+BLUE = "\033[34m"
+DEFAULT = "\033[0m"
+
 class Board:
     def __init__(self,rows,cols):
         self.col_num = cols
@@ -17,7 +21,7 @@ class Board:
             self.board[A] = c
 
     def __str__(self):
-        pieces = [".","o","x"]
+        pieces = [".",RED+"o"+DEFAULT,BLUE+"x"+DEFAULT]
         output = []
         for r,row in enumerate(self.board):
             line = ""
