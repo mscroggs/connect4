@@ -61,3 +61,8 @@ class Board:
 
     def backward_diag(self,d_n):
         return self.backward_diags()[d_n]
+
+    def copy(self):
+        return_me = Board(self.row_num,self.col_num)
+        return_me.board = self.rows()
+        return return_me

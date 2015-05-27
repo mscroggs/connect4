@@ -76,8 +76,7 @@ class Game:
         while True:
             signal.signal(signal.SIGALRM,alarm_handler)
             signal.alarm(5)
-            fake_board = Board(self.row_num,self.col_num)
-            fake_board.board = self.board.rows()
+            fake_board = self.board.copy()
             if self.turn == 1:
                 while True:
                     try:
