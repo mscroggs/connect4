@@ -6,6 +6,7 @@ def alarm_handler(signum,frame):
     raise Alarm
 
 def four_in_a_row(row):
+    """Returns 1 if player 1 has won, 2 if player 2 has won, otherwise None."""
     run = 0
     for j,val in enumerate(row):
         if j==0:
@@ -30,6 +31,7 @@ class Game:
         self.reset()
 
     def reset(self):
+        """Resets the game."""
         self.r_winner = 0
         self.board = Board(self.row_num,self.col_num)
         self.turn = 1
@@ -38,6 +40,7 @@ class Game:
         return self.board.__str__()
 
     def put_in(self,player,column):
+        """Game.put_in(player,column) puts player's piece in column."""
         col = self.board.col(column)
         row = None
         for i,val in enumerate(col):
@@ -51,6 +54,8 @@ class Game:
         self.board[row][column] = player
 
     def repeated_play(self,games,printing=1):
+        """Game.repeated_play(games) plays games games.
+        The second optional parameter printing controls how much information should be printed."""
         wins = [0,0,0]
         for i in range(games):
             self.reset()
@@ -73,6 +78,8 @@ class Game:
             print("  There were {0} draws ({1}%).".format(str(wins[0]),100*wins[0]/games))
 
     def play(self,printing=2):
+        """Plays one game.
+        The second optional parameter printing controls how much information should be printed."""
         while True:
             signal.signal(signal.SIGALRM,alarm_handler)
             signal.alarm(5)
@@ -115,6 +122,8 @@ class Game:
             raise ResultError
 
     def winner(self):
+        """Tests to see if someone has won.
+        Returns number of winning player or None."""
         #is it a draw?
         if 0 not in self.board[0]:
             return 0
