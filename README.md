@@ -61,7 +61,7 @@ The ``Board`` class has the following functionality:
 
 *   ``Board.rows()``, ``Board.cols()``, ``Board.forward_diags()`` and
     ``Board.backward_diags()`` will return a list of all the rows, columns,
-    forward diagonals (/) and backward diagonals (\) of the board
+    forward diagonals (/) and backward diagonals (\\) of the board
     (respectively).
 
 *   ``Board.row(n)``, ``Board.col(n)``, ``Board.forward_diag(n)`` and
