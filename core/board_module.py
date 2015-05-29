@@ -1,4 +1,4 @@
-# These colours may not work on non-unix. If the boards look weird, replace
+# These colours may not work on non-UNIX. If the boards look weird, replace
 # each with a blank string (eg. RED = "")
 RED = "\033[31m"
 BLUE = "\033[34m"
