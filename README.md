@@ -1,4 +1,5 @@
 CONNECT 4
+=========
 
 Look at the examples in the strategies folder to see how to build a strategy.
 
