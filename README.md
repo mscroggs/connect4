@@ -35,19 +35,20 @@ Your strategy class must inherit from ``core.Strategy`` otherwise
 ``tournament.py`` will not be able to find it. Your strategy class must 
 include the functions ``__init__`` and ``play``:
 
-*   ``__init__`` should be used to set the author of the strategy. This will
-    be used by ``tournament.py`` when the final results are displayed.
+*   ``__init__(self)`` should be used to set the author (``self.author``) of
+    the strategy. This will be used by ``tournament.py`` when the final
+    results are displayed.
 
-*   ``play`` should return the number of the column you would like to play in
-    (0 to 6). Play will be given ``board``, an instance of ``core.Board``, as
-    an input. ``board`` will tell you what the game board currently looks 
-    like. Details of the ``Board`` class are below.
+*   ``play(self,board)`` should return the number of the column you would like
+    to play in (0 to 6). ``board`` will be an instance of ``core.Board``, and
+    will tell you what the game board currently looks like. Details of the
+    ``Board`` class are below.
 
 In your strategy, ``self.turn`` will have a value of either 1 or 2. This will
 tell you whether you are player one or player two (respectively).
 
-The Board Class
----------------
+The ``Board`` Class
+-------------------
 The ``Board`` class will tell you what the game board currently looks like.
 Each cell on the ``Board`` will be set to either 1, 2 or 0 to reflect player
 one, player two and nobody having a piece there respectively.
