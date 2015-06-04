@@ -46,7 +46,7 @@ class Board:
         """Board.row(row_n) returns row number row_n."""
         return self.all_rows()[row_n]
 
-    def a__cols(self):
+    def all_cols(self):
         """Returns a list of all columns."""
         return [[self.board[row][col] for row in range(self.row_num)] for col in range(self.col_num)]
 
