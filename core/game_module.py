@@ -5,20 +5,6 @@ import signal
 def alarm_handler(signum,frame):
     raise Alarm
 
-def four_in_a_row(row):
-    """Returns 1 if player 1 has won, 2 if player 2 has won, otherwise None."""
-    run = 0
-    for j,val in enumerate(row):
-        if j==0:
-            run += 1
-        elif val == row[j-1] and val!=0:
-            run += 1
-        else:
-            run = 1
-        if run == 4 and val!=0:
-            return val
-    return None
-
 class Game:
     def __init__(self,s1,s2,rows=6,cols=7):
         self.row_num = rows
@@ -124,30 +110,4 @@ class Game:
     def winner(self):
         """Tests to see if someone has won.
         Returns number of winning player or None."""
-        #is it a draw?
-        if 0 not in self.board[0]:
-            return 0
-        #horizontal
-        for row in self.board.rows():
-            result = four_in_a_row(row)
-            if result is not None:
-                return result
-        #vertical
-        for col in self.board.cols():
-            result = four_in_a_row(col)
-            if result is not None:
-                return result
-
-        #/ diagonals
-        for diag in self.board.forward_diags():
-            result = four_in_a_row(diag)
-            if result is not None:
-                return result
-
-        #\ diagonals
-        for diag in self.board.backward_diags():
-            result = four_in_a_row(diag)
-            if result is not None:
-                return result
-            
-        return None
+        return self.board.winner()
