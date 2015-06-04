@@ -1,4 +1,5 @@
 from core import Strategy
+from core.board_module import pieces_list
 
 class HumanPlay(Strategy):
     def __init__(self):
@@ -7,7 +8,7 @@ class HumanPlay(Strategy):
     def play(self,board):
         print("\n\nThe board looks like this:")
         print(board)
-        print("\nYou are playing as "+[".","o","x"][self.turn]+".")
+        print("\nYou are playing as "+pieces_list[self.turn]+".")
 
         ready = False
         while not ready:
