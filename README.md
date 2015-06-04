@@ -59,8 +59,8 @@ The ``Board`` class has the following functionality:
     rows are numbered from the top and the columns are numbered from the left,
     the same as is usual for numbering matrices.
 
-*   ``Board.rows()``, ``Board.cols()``, ``Board.forward_diags()`` and
-    ``Board.backward_diags()`` will return a list of all the rows, columns,
+*   ``Board.all_rows()``, ``Board.all_cols()``, ``Board.all_forward_diags()`` and
+    ``Board.all_backward_diags()`` will return a list of all the rows, columns,
     forward diagonals (/) and backward diagonals (\\) of the board
     (respectively).
 

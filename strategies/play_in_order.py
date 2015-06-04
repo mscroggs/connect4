@@ -1,12 +1,12 @@
 from core import Strategy
 
 class PlayInOrder(Strategy):
+    """The strategy will play in the columns in order."""
     def __init__(self):
         self.author = "Matthew Scroggs"
-        self.next = 0
+        self.previous_move = 6
 
     def play(self,board):
-        next = self.next
-        self.next += 1
-        self.next %= board.col_num
-        return next
+        self.previous_move += 1
+        self.previous_move %= board.col_num
+        return self.previous_move

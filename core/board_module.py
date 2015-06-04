@@ -38,23 +38,23 @@ class Board:
         output.append(line)
         return "\n".join(output)
 
-    def rows(self):
+    def all_rows(self):
         """Returns a list of all rows."""
         return [[self.board[row][col] for col in range(self.col_num)] for row in range(self.row_num)]
 
     def row(self,row_n):
         """Board.row(row_n) returns row number row_n."""
-        return self.rows()[row_n]
+        return self.all_rows()[row_n]
 
-    def cols(self):
+    def a__cols(self):
         """Returns a list of all columns."""
         return [[self.board[row][col] for row in range(self.row_num)] for col in range(self.col_num)]
 
     def col(self,col_n):
         """Board.col(col_n) returns column number col_n."""
-        return self.cols()[col_n]
+        return self.all_cols()[col_n]
 
-    def forward_diags(self):
+    def all_forward_diags(self):
         """Returns a list of all forward diagonals (/)."""
         return (
                     [[self.board[i][col-i] for i in range(min(col+1,self.row_num))] for col in range(self.col_num)]
@@ -63,9 +63,9 @@ class Board:
 
     def forward_diag(self,d_n):
         """Board.forward_diag(d_n) returns forward diagonal (/) number d_n."""
-        return self.forward_diags()[d_n]
+        return self.all_forward_diags()[d_n]
 
-    def backward_diags(self):
+    def all_backward_diags(self):
         """Returns a list of all backward diagonals (\)."""
         return (
                     [[self.board[row+i][i] for i in range(self.row_num-row)] for row in range(self.row_num-1,0,-1)]
@@ -74,38 +74,38 @@ class Board:
 
     def backward_diag(self,d_n):
         """Board.backward_diag(d_n) returns backward diagonal (\) number d_n."""
-        return self.backward_diags()[d_n]
+        return self.all_backward_diags()[d_n]
 
     def copy(self):
         """Returns a copy of the board.
         This can be used to make a board which can be changed for planning ahead.
         """
         return_me = Board(self.row_num,self.col_num)
-        return_me.board = self.rows()
+        return_me.board = self.all_rows()
         return return_me
 
     def winner(self):
         """Tests to see if someone has won.
         Returns number of winning player or None."""
         #horizontal
-        for row in self.rows():
+        for row in self.all_rows():
             result = four_in_a_row(row)
             if result is not None:
                 return result
         #vertical
-        for col in self.cols():
+        for col in self.all_cols():
             result = four_in_a_row(col)
             if result is not None:
                 return result
 
         #/ diagonals
-        for diag in self.forward_diags():
+        for diag in self.all_forward_diags():
             result = four_in_a_row(diag)
             if result is not None:
                 return result
 
         #\ diagonals
-        for diag in self.backward_diags():
+        for diag in self.all_backward_diags():
             result = four_in_a_row(diag)
             if result is not None:
                 return result
