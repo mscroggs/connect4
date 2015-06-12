@@ -24,12 +24,26 @@ strategies folder (eg. ``my_strategy.py``). The file should look as follows::
     from core import Strategy
     
     class NameOfMyStrategy(Strategy):
-       def __init__(self):
-           self.author = "Your Name"
+        def __init__(self):
+            self.author = "Your Name"
     
-       def play(self,board):
-           # Your strategy goes here
-           return column_number_to_move_in
+        def play(self,board):
+            # Your strategy goes here
+            return column_number_to_move_in
+
+Additionally you can add:
+
+        def start(self):
+            # This will run when a new game is stared with your strategy.
+
+        def win(self):
+            # This will run when your strategy wins.
+
+        def lose(self):
+            # This will run when your strategy loses.
+
+        def draw(self):
+            # This will run when you strategy draws.
 
 Your strategy class must inherit from ``core.Strategy`` otherwise 
 ``tournament.py`` will not be able to find it. Your strategy class must 
