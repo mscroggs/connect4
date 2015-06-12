@@ -13,6 +13,8 @@ def is_strategy_file(f):
         return False
     if "__" in f:
         return False
+    if ".py" not in f:
+        return False
     return True
 
 pages_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "strategies")

@@ -21,6 +21,8 @@ class Game:
         self.r_winner = 0
         self.board = Board(self.row_num,self.col_num)
         self.turn = 1
+        self.s1.start()
+        self.s2.start()
 
     def __str__(self):
         return self.board.__str__()
@@ -97,12 +99,18 @@ class Game:
             signal.alarm(0)
         if winner == 0:
             if printing>0: print("Game is a draw")
+            self.s1.draw()
+            self.s2.draw()
             return 0
         elif winner == 1:
             if printing>0: print("Player 1 ("+self.s1.__class__.__name__+", by "+self.s1.author+") wins")
+            self.s1.win()
+            self.s2.lose()
             return 1
         elif winner == 2:
             if printing>0: print("Player 2 ("+self.s2.__class__.__name__+", by "+self.s2.author+") wins")
+            self.s2.win()
+            self.s1.lose()
             return 2
         else:
             raise ResultError
