@@ -19,7 +19,7 @@ them against each other.
 Making a Strategy
 -----------------
 To make a strategy, create a new file with a ``.py`` extension in the
-strategies folder (eg. ``my_strategy.py``). The file should look as follows::
+strategies folder (eg. ``my_strategy.py``). The file should look as follows:
 
     from core import Strategy
     
