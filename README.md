@@ -82,6 +82,9 @@ The ``Board`` class has the following functionality:
     ``Board.backward_diag(n)`` will return the nth row, column, forward diagonal
     and backward diagonal (respectively).
 
+*   ``Board.row_num`` and ``Board.col_num`` will give the number of rows and
+    columns in the board (respectively).
+
 *   ``Board.copy()`` will return an instance of Board which is a copy of the
     current board but can be changed without changing the current board. This
     could be useful for planning ahead moves.
