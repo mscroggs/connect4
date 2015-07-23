@@ -13,7 +13,6 @@ class Game:
         self.s2 = s2
         self.s1.turn = 1
         self.s2.turn = 2
-        self.turn = 1
         self.reset()
 
     def reset(self):
@@ -21,6 +20,9 @@ class Game:
         self.r_winner = 0
         self.board = Board(self.row_num,self.col_num)
         self.turn = 1
+        self._moves = []
+        self.w1 = 0
+        self.w2 = 0
         self.s1.start()
         self.s2.start()
 
@@ -38,7 +40,8 @@ class Game:
                 break
         if row is None:
             raise MoveError("The column you tried to play in is full")
-        
+
+        self._moves.append(column)
         self.board[row][column] = player
 
     def repeated_play(self,games,printing=1):
@@ -48,8 +51,10 @@ class Game:
         for i in range(games):
             self.reset()
             wins[self.play(printing)] += 1
-            if max(wins[1],wins[2]) > (games-wins[0])/2:
-                break
+            #if max(wins[1],wins[2]) > (games-wins[0])/2:
+            #    break
+        self.w1 = wins[1]
+        self.w2 = wins[2]
         if printing>0: print("------------")
         if wins[1] > wins[2]:
             self.r_winner = 1
@@ -97,6 +102,7 @@ class Game:
             if winner is not None:
                 break
             signal.alarm(0)
+        signal.alarm(0)
         if winner == 0:
             if printing>0: print("Game is a draw")
             self.s1.draw()
@@ -119,3 +125,6 @@ class Game:
         """Tests to see if someone has won.
         Returns number of winning player or None."""
         return self.board.winner()
+
+    def get_all_moves(self):
+        return self._moves
