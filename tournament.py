@@ -5,6 +5,8 @@ from core import Game,Strategy,Board
 from core.errors import ResultError,Alarm
 from time import sleep
 from strategies.human_play import HumanPlay
+from random import randrange
+from math import floor
 
 def is_strategy_file(f):
     if not os.path.isfile(os.path.join(pages_dir, f)):
@@ -82,7 +84,7 @@ for i1,s1 in enumerate(strategies):
 
             print("")
 
-print("Name" + " "*(max_len-4) + "Programmer" + " "*(max_a_len-10) + "Points")
+print("    Name" + " "*(max_len-4) + "Programmer" + " "*(max_a_len-10) + "Points")
 
 leaderboard = [(strategies[i].__class__.__name__,strategies[i].author,p,wins[i],tot_wins[i],i) for i,p in enumerate(points)]
 leaderboard = sorted(leaderboard,key=lambda item:(-item[2],-item[3],-item[4]))
@@ -109,7 +111,7 @@ done = False
 
 for i,item in enumerate(leaderboard):
     if item[2] != prev_p: c_n = i+1
-    print(item[0] + " "*(max_len-len(item[0])) + item[1] + " "*(max_a_len-len(item[1])) + str(item[2]))
+    print("   "+item[0] + " "*(max_len-len(item[0])) + item[1] + " "*(max_a_len-len(item[1])) + str(item[2]))
     html_output += "<tr"
     if i==4: html_output += " class='out'"
     html_output += ">"
@@ -132,7 +134,7 @@ with open("results.html","w") as f:
 
 final_round = [strategies[item[5]] for item in leaderboard[:4]]
 
-print("Preparing final round...")
+print("   Preparing final round...")
 
 def match(st1,st2):
 
@@ -162,7 +164,7 @@ matches = [
            get_moves_to_show(final_round[1],final_round[2],i2),
            get_moves_to_show(win1,win2,i3)
           ]
-print("Final round ready")
+print("   Final round ready")
 
 raw_input("Press Enter to start the final round...")
 RED   = "\033[41m \033[0m"
@@ -178,17 +180,17 @@ for i,match in enumerate(matches):
     match_details += "\n"
     width1 = max(len(match[0].__class__.__name__),len(match[0].author))
     width2 = max(len(match[1].__class__.__name__),len(match[1].author))
-    match_details += pieces[1]*(4+width1) + "    " + pieces[2]*(4+width2)
+    match_details += "   "+pieces[1]*(4+width1) + "    " + pieces[2]*(4+width2)
     match_details += "\n"
-    match_details += pieces[1]+" "+match[0].__class__.__name__+(" "*(width1-len(match[0].__class__.__name__)))+" "+pieces[1]
+    match_details += "   "+pieces[1]+" "+match[0].__class__.__name__+(" "*(width1-len(match[0].__class__.__name__)))+" "+pieces[1]
     match_details += " vs "
     match_details += pieces[2]+" "+(" "*(width2-len(match[1].__class__.__name__)))+match[1].__class__.__name__+" "+pieces[2]
     match_details += "\n"
-    match_details += pieces[1]+" "+match[0].author+(" "*(width1-len(match[0].author)))+" "+pieces[1]
+    match_details += "   "+pieces[1]+" "+match[0].author+(" "*(width1-len(match[0].author)))+" "+pieces[1]
     match_details += "    "
     match_details += pieces[2]+" "+(" "*(width2-len(match[1].author)))+match[1].author+" "+pieces[2]
     match_details += "\n"
-    match_details += pieces[1]*(4+width1) + "    " + pieces[2]*(4+width2)
+    match_details += "   "+pieces[1]*(4+width1) + "    " + pieces[2]*(4+width2)
     match_details += "\n"
 
     print("\n"*3 + match_details)
@@ -204,7 +206,7 @@ for i,match in enumerate(matches):
         turn = 3-turn
         all_lines = []
         for row in board:
-            next_lines = ["","","",""]
+            next_lines = [" "*3]*4
             for piece in row:
                 for j in range(3):
                     next_lines[j] += pieces[piece]*4+" "
@@ -213,8 +215,10 @@ for i,match in enumerate(matches):
         print(match_details)
         print("\n"*5)
         print("\n".join(all_lines))
-        sleep(1)
-        if go_num == len(match[2]) - 1:
+        if go_num < len(match[2]) - 1:
+            sleep(randrange(int(floor(len(match[2])/4)))+1)
+        else:
+            sleep(1)
             w = match[3]
             if i == 2:
                 print(pieces[w]+match[w-1].__class__.__name__ + " by " + match[w-1].author + pieces[w] + " has won!")
