@@ -1,8 +1,12 @@
 # These colours may not work on non-UNIX. If the boards look weird, replace
 # each with a blank string (eg. RED = "")
-RED = "\033[31m"
-BLUE = "\033[34m"
-DEFAULT = "\033[0m"
+
+#RED = "\033[31m"
+#BLUE = "\033[34m"
+#DEFAULT = "\033[0m"
+RED = ""
+BLUE = ""
+DEFAULT = ""
 
 pieces_list = [".",RED+"o"+DEFAULT,BLUE+"x"+DEFAULT]
 
