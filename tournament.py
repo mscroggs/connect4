@@ -218,7 +218,7 @@ for i,match in enumerate(matches):
         if go_num < len(match[2]) - 1:
             raw_input("")
         else:
-            sleep(1)
+            raw_input("")
             w = match[3]
             if i == 2:
                 print(pieces[w]+match[w-1].__class__.__name__ + " by " + match[w-1].author + pieces[w] + " has won!")
