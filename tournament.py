@@ -216,7 +216,7 @@ for i,match in enumerate(matches):
         print("\n"*5)
         print("\n".join(all_lines))
         if go_num < len(match[2]) - 1:
-            sleep(randrange(int(floor(len(match[2])/4)))+1)
+            raw_input("")
         else:
             sleep(1)
             w = match[3]
