@@ -7,5 +7,4 @@ class RandomStrategy(Strategy):
         self.author = "Matthew Scroggs"
 
     def play(self, board):
-        column_for_play = randrange(board.col_num)
-        return column_for_play
+        return randrange(7)
