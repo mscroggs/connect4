@@ -116,8 +116,18 @@ for i,item in enumerate(leaderboard):
     if item[2] != prev_p: c_n = i+1
     print("   "+item[0] + " "*(max_len-len(item[0])) + item[1] + " "*(max_a_len-len(item[1])) + str(item[2]))
     tex_output += strc(c_n) + "&"
-    tex_output += strc(item[0]) + "&"
-    tex_output += strc(item[1]) + "&"
+    if i<4:
+        tex_output += "\\textbf{"
+    tex_output += strc(item[0])
+    if i<4:
+        tex_output += "}"
+    tex_output += "&"
+    if i<4:
+        tex_output += "\\textbf{"
+    tex_output += strc(item[1])
+    if i<4:
+        tex_output += "}"
+    tex_output += "&"
     tex_output += "\\textbf{" + strc(item[2]) + "}&"
     tex_output += strc(item[3]) + "&"
     tex_output += strc(item[2]-item[3]*3) + "&"
