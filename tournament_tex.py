@@ -28,7 +28,6 @@ for file in strategy_files:
     file_no_ext = os.path.splitext(file)[0]
     module = getattr(__import__("strategies", fromlist=[file_no_ext]),
                      file_no_ext)
-    reload(module)
     for object in dir(module):
         obj = getattr(module, object)
         try:
