@@ -7,7 +7,3 @@ class MoveError(BaseException):
 class ResultError(BaseException):
     def __str__(self):
         return "Invalid result"
-
-class Alarm(BaseException):
-    def __str__(self):
-        return "Strategy took too long to move"

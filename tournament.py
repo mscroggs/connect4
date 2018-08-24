@@ -2,7 +2,7 @@
 
 import os
 from core import Game,Strategy,Board
-from core.errors import ResultError,Alarm
+from core.errors import ResultError
 from time import sleep
 from strategies.human_play import HumanPlay
 from random import randrange
@@ -172,7 +172,7 @@ def get_moves_to_show(st1,st2,win):
         try:
             game.play(0)
             done = True
-        except Alarm:
+        except:
             done = False
     if game.winner() == win:
         return (st1,st2,game.get_all_moves(),win)
