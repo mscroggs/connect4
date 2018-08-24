@@ -1,9 +1,5 @@
-from core.errors import MoveError,ResultError,Alarm
+from core.errors import MoveError,ResultError
 from core.board_module import Board
-import signal
-
-def alarm_handler(signum,frame):
-    raise Alarm
 
 class Game:
     def __init__(self,s1,s2,rows=6,cols=7):
@@ -49,11 +45,8 @@ class Game:
         The second optional parameter printing controls how much information should be printed."""
         wins = [0,0,0]
         for i in range(games):
-            try:
-                self.reset()
-                wins[self.play(printing)] += 1
-            except Alarm:
-                wins[3-self.turn] += 1
+            self.reset()
+            wins[self.play(printing)] += 1
         self.w1 = wins[1]
         self.w2 = wins[2]
         if printing>0: print("------------")
@@ -72,38 +65,34 @@ class Game:
             print("  There were {0} draws ({1}%).".format(str(wins[0]),100*wins[0]/games))
 
     def play(self,printing=2):
+        import random
         """Plays one game.
         The second optional parameter printing controls how much information should be printed."""
         while True:
-            signal.signal(signal.SIGALRM,alarm_handler)
-            signal.alarm(5)
             fake_board = self.board.copy()
             if self.turn == 1:
-                while True:
-                    try:
-                        p1 = self.s1.play(fake_board)
-                        self.put_in(1,p1)
-                        self.turn = 2
-                        break
-                    except MoveError:
-                        pass
+                play = self.s1.play
             else:
-                while True:
-                    try:
-                        p2 = self.s2.play(fake_board)
-                        self.put_in(2,p2)
-                        self.turn = 1
-                        break
-                    except MoveError:
-                        pass
+                play = self.s2.play
+            n = 0
+            while n<3:
+                try:
+                    p = play(fake_board)
+                    self.put_in(self.turn,p)
+                    self.turn = 3-self.turn
+                    break
+                except MoveError:
+                    n += 1
+            else:
+                p = random.choice([i for i in range(7) if self.board[0,i]==0])
+                self.put_in(self.turn,p)
+                self.turn = 3-self.turn
             if printing>1:
                 print(" ")
                 print(self)
             winner = self.winner()
             if winner is not None:
                 break
-            signal.alarm(0)
-        signal.alarm(0)
         if winner == 0:
             if printing>0:
                 print(" ")

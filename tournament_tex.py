@@ -8,7 +8,7 @@ from strategies.human_play import HumanPlay
 from random import randrange
 from math import floor
 
-number_of_games = 2
+number_of_games = 100
 
 try:
     import thread
