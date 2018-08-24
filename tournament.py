@@ -8,6 +8,10 @@ from strategies.human_play import HumanPlay
 from random import randrange
 from math import floor
 
+number_of_games = 100
+
+from threading import Thread
+
 def is_strategy_file(f):
     if not os.path.isfile(os.path.join(pages_dir, f)):
         return False
@@ -28,7 +32,6 @@ for file in strategy_files:
     file_no_ext = os.path.splitext(file)[0]
     module = getattr(__import__("strategies", fromlist=[file_no_ext]),
                      file_no_ext)
-    reload(module)
     for object in dir(module):
         obj = getattr(module, object)
         try:
@@ -38,6 +41,27 @@ for file in strategy_files:
         except:
             pass
 
+def play_all_against(i1,s1,points, wins, tot_wins):
+    #points = [0]*len(strategies)
+    for i2,s2 in enumerate(strategies):
+        if i1!=i2:
+            game = Game(s1,s2)
+            game.repeated_play(number_of_games,0)
+            tot_wins[i1] += game.w1
+            tot_wins[i2] += game.w2
+            if game.r_winner==0:
+                points[i1]+=1
+                points[i2]+=1
+                print(s1.__class__.__name__+" and "+s2.__class__.__name__+" draw!")
+            if game.r_winner==1:
+                points[i1]+=3
+                wins[i1]+=1
+                print(s1.__class__.__name__+" beats "+s2.__class__.__name__+"!")
+            if game.r_winner==2:
+                points[i2]+=3
+                wins[i2]+=1
+                print(s2.__class__.__name__+" beats "+s1.__class__.__name__+"!")
+
 points = [0]*len(strategies)
 wins = [0]*len(strategies)
 tot_wins = [0]*len(strategies)
@@ -45,92 +69,81 @@ tot_wins = [0]*len(strategies)
 max_len = 6
 max_a_len = 12
 
-print("")
 
+thread_ls = []
+points = []
+wins = []
+tot_wins = []
 for i1,s1 in enumerate(strategies):
     max_len = max(max_len,len(s1.__class__.__name__)+2)
     max_a_len = max(max_a_len,len(s1.author)+2)
-    for i2,s2 in enumerate(strategies):
-        if i1!=i2:
-            #sleep(2)
-            print(s1.__class__.__name__+" vs. "+s2.__class__.__name__)
-            #sleep(2)
-            try:
-                game = Game(s1,s2)
-                game.repeated_play(100,0)
-                tot_wins[i1] += game.w1
-                tot_wins[i2] += game.w2
-                if game.r_winner==0:
-                    points[i1]+=1
-                    points[i2]+=1
-                    print("  It's a draw!")
-                if game.r_winner==1:
-                    points[i1]+=3
-                    wins[i1]+=1
-                    print("  "+s1.__class__.__name__+" wins!")
-                if game.r_winner==2:
-                    points[i2]+=3
-                    wins[i2]+=1
-                    print("  "+s2.__class__.__name__+" wins!")
+    points.append([0]*len(strategies))
+    wins.append([0]*len(strategies))
+    tot_wins.append([0]*len(strategies))
+    thread_ls.append(Thread(target=play_all_against, args=(i1,s1,points[-1],wins[-1],tot_wins[-1])))
+    thread_ls[-1].start()
 
-            except Alarm:
-                if game.turn == 1:
-                    print("  "+game.s1.__class__.__name__+" took too long to move")
-                if game.turn == 2:
-                    print("  "+game.s2.__class__.__name__+" took too long to move")
+for t in thread_ls:
+    t.join()
 
-            except ResultError:
-                print("  ResultError. Continuing tournament.")
-
-            print("")
+points   = [sum([points[i][j]   for i in range(len(strategies))]) for j in range(len(strategies))]
+wins     = [sum([wins[i][j]     for i in range(len(strategies))]) for j in range(len(strategies))]
+tot_wins = [sum([tot_wins[i][j] for i in range(len(strategies))]) for j in range(len(strategies))]
 
 print("    Name" + " "*(max_len-4) + "Programmer" + " "*(max_a_len-10) + "Points")
 
 leaderboard = [(strategies[i].__class__.__name__,strategies[i].author,p,wins[i],tot_wins[i],i) for i,p in enumerate(points)]
 leaderboard = sorted(leaderboard,key=lambda item:(-item[2],-item[3],-item[4]))
 
-html_output = """<html>
-<head>
-<style type='text/css'>
-table,td {border:1px solid #444444;border-collapse:collapse}
-tr.out td {border-top:3px solid black}
-td {padding:3px;text-align:center}
-thead td {font-weight:bold}
-</style>
-</head>
-
-<body>
-
-<table>
-<thead><td>#</td><td>Name of Bot</td><td>Programmer</td><td>Points</td><td>Wins</td><td>Draws</td><td>Loses</td><td>Total Games Won</td></thead>
+tex_output = """\\documentclass{article}
+\\usepackage{tikz}
+\\usepackage{geometry}
+\\geometry{
+    papersize={200mm,150mm},
+    top=5mm,left=5mm,right=5mm,bottom=5mm
+    }
+\\begin{document}
+\\begin{tabular}{|l|l|c|c|c|c|c|c|}
+\\hline
+\\#&Name of Bot&Programmer&Points&Wins&Draws&Loses&Total Games Won\\\\
+\\hline
+\\hline
 """
 
 prev_p = -1
 c_n = 0
 done = False
 
+def strc(t):
+    t = str(t)
+    return "\\_".join(t.split("_"))
+
 for i,item in enumerate(leaderboard):
     if item[2] != prev_p: c_n = i+1
     print("   "+item[0] + " "*(max_len-len(item[0])) + item[1] + " "*(max_a_len-len(item[1])) + str(item[2]))
-    html_output += "<tr"
-    if i==4: html_output += " class='out'"
-    html_output += ">"
-    html_output += "<td>" + str(c_n) + "</td>"
-    html_output += "<td>" + item[0] + "</td>"
-    html_output += "<td>" + item[1] + "</td>"
-    html_output += "<td><b>" + str(item[2]) + "</b></td>"
-    html_output += "<td>" + str(item[3]) + "</td>"
-    html_output += "<td>" + str(item[2]-item[3]*3) + "</td>"
-    html_output += "<td>" + str(len(leaderboard)*2-2-item[2]+item[3]*2) + "</td>"
-    html_output += "<td>" + str(item[4]) + "</td>"
-    html_output += "</tr>\n"
-    tr = "tr"
+    tex_output += strc(c_n) + "&"
+    if i<4:
+        tex_output += "\\textbf{"
+    tex_output += strc(item[0])
+    if i<4:
+        tex_output += "}"
+    tex_output += "&"
+    if i<4:
+        tex_output += "\\textbf{"
+    tex_output += strc(item[1])
+    if i<4:
+        tex_output += "}"
+    tex_output += "&"
+    tex_output += "\\textbf{" + strc(item[2]) + "}&"
+    tex_output += strc(item[3]) + "&"
+    tex_output += strc(item[2]-item[3]*3) + "&"
+    tex_output += strc(len(leaderboard)*2-2-item[2]+item[3]*2) + "&"
+    tex_output += strc(item[4])
+    tex_output += "\\\\\\hline"
     prev_p = item[2]
 
-html_output += "</table>\n\n</body>\n</html>"
-
-with open("results.html","w") as f:
-    f.write(html_output)
+tex_output += "\\end{tabular}\n\n"
+tex_output += "\\newpage"
 
 final_round = [strategies[item[5]] for item in leaderboard[:4]]
 
@@ -140,8 +153,8 @@ def match(st1,st2):
 
     game1 = Game(st1,st2)
     game2 = Game(st2,st1)
-    game1.repeated_play(50,0)
-    game2.repeated_play(50,0)
+    game1.repeated_play(number_of_games,0)
+    game2.repeated_play(number_of_games,0)
 
     if game1.w1+game2.w2 >= 50:
         return (1,st1)
@@ -154,11 +167,18 @@ i3,win3 = match(win1,win2)
 
 def get_moves_to_show(st1,st2,win):
     game = Game(st1,st2)
-    game.play(0)
+    done = False
+    while not done:
+        try:
+            game.play(0)
+            done = True
+        except Alarm:
+            done = False
     if game.winner() == win:
         return (st1,st2,game.get_all_moves(),win)
     else:
         return get_moves_to_show(st2,st1,3-win)
+
 matches = [
            get_moves_to_show(final_round[0],final_round[3],i1),
            get_moves_to_show(final_round[1],final_round[2],i2),
@@ -166,35 +186,38 @@ matches = [
           ]
 print("   Final round ready")
 
-raw_input("Press Enter to start the final round...")
-RED   = "\033[41m \033[0m"
-BLUE  = "\033[44m \033[0m"
-WHITE = "\033[107m \033[0m"
+WHITE=""
+RED=""
+BLUE=""
 
 pieces = [WHITE,RED,BLUE]
 
 match_names = ["Semi Final 1","Semi Final 2","The Final"]
 
 for i,match in enumerate(matches):
-    match_details = match_names[i]
-    match_details += "\n"
-    width1 = max(len(match[0].__class__.__name__),len(match[0].author))
-    width2 = max(len(match[1].__class__.__name__),len(match[1].author))
-    match_details += "   "+pieces[1]*(4+width1) + "    " + pieces[2]*(4+width2)
-    match_details += "\n"
-    match_details += "   "+pieces[1]+" "+match[0].__class__.__name__+(" "*(width1-len(match[0].__class__.__name__)))+" "+pieces[1]
-    match_details += " vs "
-    match_details += pieces[2]+" "+(" "*(width2-len(match[1].__class__.__name__)))+match[1].__class__.__name__+" "+pieces[2]
-    match_details += "\n"
-    match_details += "   "+pieces[1]+" "+match[0].author+(" "*(width1-len(match[0].author)))+" "+pieces[1]
-    match_details += "    "
-    match_details += pieces[2]+" "+(" "*(width2-len(match[1].author)))+match[1].author+" "+pieces[2]
-    match_details += "\n"
-    match_details += "   "+pieces[1]*(4+width1) + "    " + pieces[2]*(4+width2)
-    match_details += "\n"
 
-    print("\n"*3 + match_details)
-    raw_input("Press Enter to begin...")
+    title_page = "\\begin{center}\\Huge{\\textbf{"+ match_names[i] +"}}\\end{center}\n\n"
+
+    for i in range(2):
+        title_page += "\\begin{minipage}{.4\\textwidth}\n"
+        title_page += "\\begin{center}\n"
+        title_page += strc(match[i].__class__.__name__) + "\\\\"
+        title_page += strc(match[i].author) + "\\\\"
+        title_page += "\\begin{tikzpicture}\n"
+        if i==0:
+            title_page += "\\filldraw[fill=red] (0mm,0mm) circle (7mm);\n"
+        if i==1:
+            title_page += "\\filldraw[fill=yellow] (0mm,0mm) circle (7mm);\n"
+        title_page += "\\end{tikzpicture}\n"
+        title_page += "\\end{center}\n"
+        title_page += "\\end{minipage}"
+        if i==0:
+            title_page += "\\hfill"
+        if i==1:
+            title_page += "\n"
+
+    tex_output += title_page+"\\newpage"
+
     board = [[0 for j in range(7)] for k in range(6)]
     turn = 1
     for go_num,go in enumerate(match[2]):
@@ -204,27 +227,28 @@ for i,match in enumerate(matches):
                 break
         board[j][go] = turn
         turn = 3-turn
-        all_lines = []
-        for row in board:
-            next_lines = [" "*3]*4
-            for piece in row:
-                for j in range(3):
-                    next_lines[j] += pieces[piece]*4+" "
-            all_lines.append("\n".join(next_lines))
-        print("\n"*20)
-        print(match_details)
-        print("\n"*5)
-        print("\n".join(all_lines))
-        if go_num < len(match[2]) - 1:
-            raw_input("")
-        else:
-            raw_input("")
-            w = match[3]
-            if i == 2:
-                print(pieces[w]+match[w-1].__class__.__name__ + " by " + match[w-1].author + pieces[w] + " has won!")
-                sleep(1)
-                print("\nThe End\n")
-            else:
-                print(pieces[w]+match[w-1].__class__.__name__ + " by " + match[w-1].author + pieces[w] + " goes through to the next round!")
-                raw_input("Press Enter to continue...")
+        tex_output += title_page
+        tex_output += "\\begin{center}\n\\begin{tikzpicture}\n"
+        tex_output += "\\filldraw[fill=cyan] (-8mm,-8mm) rectangle (104mm,88mm);\n"
+        for j,row in enumerate(board):
+            for i,piece in enumerate(row):
+                tex_output += "\\filldraw[fill="
+                if piece == 0: tex_output += "white"
+                if piece == 1: tex_output += "red"
+                if piece == 2: tex_output += "yellow"
+                tex_output += "] ("
+                tex_output += str(i*16)
+                tex_output += "mm,"
+                tex_output += str(80-j*16)
+                tex_output += "mm) circle (7mm);\n"
+        tex_output += "\\end{tikzpicture}\n\\end{center}"
+        tex_output += "\\newpage\n\n"
+    tex_output += "\\newpage"
 
+
+tex_output += "\end{document}"
+
+with open("results.tex","w") as f:
+    f.write(tex_output)
+
+os.system("pdflatex results.tex")
