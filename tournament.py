@@ -8,7 +8,7 @@ from strategies.human_play import HumanPlay
 from random import randrange
 from math import floor
 
-number_of_games = 100
+number_of_games = 2
 
 from threading import Thread
 
@@ -19,6 +19,8 @@ def is_strategy_file(f):
         return False
     if "__" in f:
         return False
+    if ".swp" in f:
+        return False
     if ".py" not in f:
         return False
     return True
@@ -27,6 +29,7 @@ pages_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "strategie
 strategy_files = [f for f in os.listdir(pages_dir) if is_strategy_file(f)]
 
 strategies = []
+
 
 for file in strategy_files:
     file_no_ext = os.path.splitext(file)[0]
@@ -41,6 +44,8 @@ for file in strategy_files:
         except:
             pass
 
+print([s.__class__.__name__ for s in strategies])
+
 def play_all_against(i1,s1,points, wins, tot_wins):
     #points = [0]*len(strategies)
     for i2,s2 in enumerate(strategies):
@@ -52,15 +57,15 @@ def play_all_against(i1,s1,points, wins, tot_wins):
             if game.r_winner==0:
                 points[i1]+=1
                 points[i2]+=1
-                print(s1.__class__.__name__+" and "+s2.__class__.__name__+" draw!")
+                print(s1.__class__.__name__+" and "+s2.__class__.__name__+" draw!", i2,"/",len(strategies))
             if game.r_winner==1:
                 points[i1]+=3
                 wins[i1]+=1
-                print(s1.__class__.__name__+" beats "+s2.__class__.__name__+"!")
+                print(s1.__class__.__name__+" beats "+s2.__class__.__name__+"!", i2,"/",len(strategies))
             if game.r_winner==2:
                 points[i2]+=3
                 wins[i2]+=1
-                print(s2.__class__.__name__+" beats "+s1.__class__.__name__+"!")
+                print(s2.__class__.__name__+" beats "+s1.__class__.__name__+"!", i2,"/",len(strategies))
 
 points = [0]*len(strategies)
 wins = [0]*len(strategies)
@@ -116,7 +121,9 @@ done = False
 
 def strc(t):
     t = str(t)
-    return "\\_".join(t.split("_"))
+    t = "\\_".join(t.split("_"))
+    t = "\\&".join(t.split("&"))
+    return t
 
 for i,item in enumerate(leaderboard):
     if item[2] != prev_p: c_n = i+1

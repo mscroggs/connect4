@@ -81,7 +81,7 @@ class Game:
                     self.put_in(self.turn,p)
                     self.turn = 3-self.turn
                     break
-                except MoveError:
+                except:
                     n += 1
             else:
                 p = random.choice([i for i in range(7) if self.board[0,i]==0])

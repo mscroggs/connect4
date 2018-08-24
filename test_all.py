@@ -9,7 +9,7 @@ from strategies.human_play import HumanPlay
 from random import randrange
 from math import floor
 
-number_of_games = 10
+number_of_games = 1
 
 def is_strategy_file(f):
     if not os.path.isfile(os.path.join(pages_dir, f)):
@@ -19,6 +19,8 @@ def is_strategy_file(f):
     if "__" in f:
         return False
     if ".py" not in f:
+        return False
+    if ".swp" in f:
         return False
     return True
 
