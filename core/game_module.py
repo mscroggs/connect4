@@ -49,10 +49,11 @@ class Game:
         The second optional parameter printing controls how much information should be printed."""
         wins = [0,0,0]
         for i in range(games):
-            self.reset()
-            wins[self.play(printing)] += 1
-            #if max(wins[1],wins[2]) > (games-wins[0])/2:
-            #    break
+            try:
+                self.reset()
+                wins[self.play(printing)] += 1
+            except Alarm:
+                wins[3-self.turn] += 1
         self.w1 = wins[1]
         self.w2 = wins[2]
         if printing>0: print("------------")

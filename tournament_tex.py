@@ -8,6 +8,13 @@ from strategies.human_play import HumanPlay
 from random import randrange
 from math import floor
 
+number_of_games = 2
+
+try:
+    import thread
+except ImportError:
+    import _thread as thread
+
 def is_strategy_file(f):
     if not os.path.isfile(os.path.join(pages_dir, f)):
         return False
@@ -56,7 +63,7 @@ for i1,s1 in enumerate(strategies):
             #sleep(2)
             try:
                 game = Game(s1,s2)
-                game.repeated_play(100,0)
+                game.repeated_play(number_of_games,0)
                 tot_wins[i1] += game.w1
                 tot_wins[i2] += game.w2
                 if game.r_winner==0:
@@ -146,8 +153,8 @@ def match(st1,st2):
 
     game1 = Game(st1,st2)
     game2 = Game(st2,st1)
-    game1.repeated_play(50,0)
-    game2.repeated_play(50,0)
+    game1.repeated_play(number_of_games,0)
+    game2.repeated_play(number_of_games,0)
 
     if game1.w1+game2.w2 >= 50:
         return (1,st1)
@@ -160,11 +167,18 @@ i3,win3 = match(win1,win2)
 
 def get_moves_to_show(st1,st2,win):
     game = Game(st1,st2)
-    game.play(0)
+    done = False
+    while not done:
+        try:
+            game.play(0)
+            done = True
+        except Alarm:
+            done = False
     if game.winner() == win:
         return (st1,st2,game.get_all_moves(),win)
     else:
         return get_moves_to_show(st2,st1,3-win)
+
 matches = [
            get_moves_to_show(final_round[0],final_round[3],i1),
            get_moves_to_show(final_round[1],final_round[2],i2),
