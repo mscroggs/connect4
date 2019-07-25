@@ -12,8 +12,12 @@ class COFFIN(Strategy):
                 self.data = json.load(f)
         except:
             self.data = {}
+        try:
+            with open("plot.json") as f:
+                self.plot = json.load(f)
+        except:
+            self.plot = [0]
         self.n = 0
-        self.plot = [0]
 
     def make_board_string(self, board):
         b1 = "".join(["".join([str(i) for i in row]) for row in board.all_rows()])
@@ -65,6 +69,10 @@ class COFFIN(Strategy):
             self.n = 0
             with open("data.json","w") as f:
                 json.dump(self.data,f)
+            with open("plot.json","w") as f:
+                json.dump(self.plot,f)
             plt.plot(self.plot)
-            plt.show()
+            plt.xlabel("Games")
+            plt.ylabel("3×wins + 1×draws - 1×losses")
+            plt.savefig("learning.png")
             plt.clf()
